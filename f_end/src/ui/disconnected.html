@@ -1,0 +1,25 @@
+<div data-connected="false">
+  <div id="disconnected">
+    <h3>Conectar com o google drive</h2>
+    <button id="connect">Conectar</button>
+  </div>
+</div>
+
+<style>
+  div[data-connected] > div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  h3 {
+    margin: 0;
+  }
+</style>
+
+<script>
+  parent.postMessage({ pluginMessage: { type: 'has_connected' } }, '*')
+
+  document.getElementById('connect').onclick = () => {
+    parent.postMessage({ pluginMessage: { type: 'create_connection' } }, '*')
+  }
+</script>

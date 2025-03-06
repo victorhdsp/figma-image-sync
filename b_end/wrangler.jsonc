@@ -1,0 +1,15 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "figma-image-sync-bend",
+  "main": "src/index.ts",
+  "compatibility_date": "2025-03-06",
+  "observability": {
+    "enabled": true
+  },
+  "kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "1987e84460134f4e9434720844b8c9dd"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+<div data-connected="false">
+  <div id="loading">
+    <h3>Carregando</h2>
+  </div>
+</div>
+
+<style>
+  div[data-connected] > div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  h3 {
+    margin: 0;
+  }
+</style>
+
+<script>
+  function crypt () {
+    return window.crypto.getRandomValues(new Uint32Array(1))[0];
+  }
+  const id = `${crypt()} ${crypt()} ${crypt()}`;
+  parent.postMessage({ pluginMessage: { type: 'has_connected', id } }, '*');
+</script>

@@ -1,0 +1,24 @@
+<div data-connected="false">
+  <div id="selected">
+    <h3>Você está com uma pasta selecionada</h2>
+    <button id="remove">Remover</button>
+  </div>
+</div>
+
+<style>
+  div[data-connected] > div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  h3 {
+    margin: 0;
+  }
+</style>
+
+<script>
+  parent.postMessage({ pluginMessage: { type: 'started' } }, '*');
+  document.getElementById('remove').onclick = () => {
+    parent.postMessage({ pluginMessage: { type: 'unselect_folder' } }, '*');
+  }
+</script>

@@ -1,0 +1,31 @@
+{
+  "name": "figma-image-sync",
+  "id": "1479455324622422872",
+  "api": "1.0.0",
+  "main": "src/code.js",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "documentAccess": "dynamic-page",
+  "editorType": [
+    "figma"
+  ],
+  "ui": {
+    "main": "src/ui/index.html",
+    "connected": "src/ui/connected.html",
+    "disconnected": "src/ui/disconnected.html",
+    "selected": "src/ui/selected.html"
+  },
+  "networkAccess": {
+    "allowedDomains": [
+      "none"
+    ],
+    "devAllowedDomains": [
+      "*"
+    ]
+  },
+  "permissions": [
+    "activeusers",
+    "currentuser",
+    "fileusers"
+  ]
+}

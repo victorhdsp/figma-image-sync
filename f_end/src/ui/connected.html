@@ -1,0 +1,75 @@
+<div data-connected="false">
+  <div id="connected">
+    <h3>Qual pasta deve ser sincronizada?</h3>
+    <input type="text" id="search" placeholder="Pesquisar pasta" />
+    <div id="folders"></div>
+  </div>
+</div>
+
+<style>
+  div[data-connected] > div {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  h3 {
+    margin: 0;
+  }
+  #folders {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .folder {
+    display: flex;
+    gap: 10px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+</style>
+
+<script>
+  async function update_folders(search, token) {
+    const url = `https://www.googleapis.com/drive/v3/files?q=mimeType = 'application/vnd.google-apps.folder' and name contains '${search}'`;
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    const data = await response.json();
+    document.querySelector('#folders').innerHTML = data.files
+      .map((folder) => {
+        return `<div class="folder">
+            <input type="radio" name="folder" value="${folder.id}" id="${folder.id}" />
+            <label for="${folder.id}">${folder.name}</label>
+        </div>`;
+      })
+      .join('');
+
+    document.querySelectorAll('input[name="folder"]').forEach((input) => {
+      input.addEventListener('change', (event) => {
+        parent.postMessage({ pluginMessage: { type: 'select_folder', id: event.target.value } }, '*');
+      });
+    });
+  }
+
+  parent.postMessage({ pluginMessage: { type: 'get_drive' } }, '*');
+  let search = '';
+
+  window.onmessage = (event) => {
+    if (event.data.pluginMessage) {
+      const msg = event.data.pluginMessage;
+      if (msg.type === 'update_drive') {
+        update_folders(search, msg.token);
+      }
+    }
+  };
+
+  document.querySelector('#search').addEventListener('change', (event) => {
+    search = event.target.value;
+    parent.postMessage({ pluginMessage: { type: 'get_drive' } }, '*');
+  });
+
+  
+</script>
