@@ -13,7 +13,7 @@ googleOAuth.get('/', async (c) => {
     const { id } = c.req.queries();
     const token = await c.env.KV.get(`${id}`);
     if (!token) {
-        return c.text('Token not found')
+        return c.json({ message: 'not found' })
     }
     return c.json({ token })
 })
@@ -21,13 +21,13 @@ googleOAuth.get('/', async (c) => {
 googleOAuth.delete('/', async (c) => {
     const { id } = c.req.queries();
     await c.env.KV.delete(`${id}`);
-    return c.text('Token deleted')
+    return c.json({ message: 'deleted' })
 })
 
 googleOAuth.get('/callback', async (c) => {
     const { state, access_token } = c.req.queries();
     await c.env.KV.put(`${state}`, `${access_token}`);
-    return c.text('Finalizado')
+    return c.json({ message: 'finished' })
 })
 
 googleOAuth.get('/redirect', async (c) => {
