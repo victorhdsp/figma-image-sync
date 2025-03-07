@@ -4,9 +4,10 @@
 ## Momento
  Até o momento a aplicação consegue sincronizar uma pasta do google drive com uma página do figma, então em teoria isso já é um projeto funcional, estou baixando somente os arquivos modificados, visualizo isso utilizando o "modifiedAt", porém tem alguns pontos que acho necessário acertar para considerar um projeto funcional de fato.
 
- Por exemplo, as imagens estão sendo dispejadas umas por cima da outra na página, quero pegar a ultima página colocada e colocar 100px para o lado e as que forem modificadas e não atualizadas, devem permanecer no mesmo local.
-
- Outro exemplo é que o plugin só funciona assim que você abre ele e não é o objetivo quero que ele fique ativo o tempo todo e tambem em background, para não ter uma tela atrapalhando o usuário.
+ [ ] Fazer o plugin funcionar em background, sem manter o plugin aberto.
+ [ ] Criar um design bonito para as telas.
+ [ ] Manter o usuário logado por mais tempo.
+ [ ] Converter arquivos em PSD para PNG.
 
  ## Instalação
 

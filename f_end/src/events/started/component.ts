@@ -1,8 +1,21 @@
 import { IImageInfo } from "../../utils/google";
 
-export async function createComponent(imageInfo: IImageInfo) {
+export async function createComponent(page: PageNode, imageInfo: IImageInfo) {
+  let x = 0;
+  let deepRightNode: SceneNode | undefined;
+
+  if (page.children.length > 0) {
+    deepRightNode = page.children[0];
+    page.children.forEach((node) => {
+      if (node.x > deepRightNode!.x)
+        deepRightNode = node;
+    });
+    x = deepRightNode.x + deepRightNode.width + 200;
+  }
+
   const fComp = figma.createComponent();
   fComp.name = `${imageInfo.name}_|_${imageInfo.modifiedTime}`;
+  fComp.x = x;
   return fComp;
 }
 

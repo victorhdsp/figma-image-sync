@@ -26,7 +26,7 @@ async function addImageInPage(file: IFile, page: PageNode, token: string) {
     if (!await componentNeedUpdate(fComp, imageInfo))
       return true;
   } else
-    fComp = await createComponent(imageInfo);
+    fComp = await createComponent(page, imageInfo);
   
   if (!fComp) {
     figma.notify("Strange error in component");
@@ -68,7 +68,8 @@ export async function started() {
   const folderId = await figma.clientStorage.getAsync(`${pluginId}_folder`);
   const token = await figma.clientStorage.getAsync('token');
   const page = await create_or_set_page(folderId);
-  exec(folderId, page, token);
+  await exec(folderId, page, token);
+  setTimeout(() => started(), 10 * 1000);
 }
 
 export const STARTED = "started";
