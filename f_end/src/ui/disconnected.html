@@ -17,8 +17,6 @@
 </style>
 
 <script>
-  parent.postMessage({ pluginMessage: { type: 'has_connected' } }, '*')
-
   document.getElementById('connect').onclick = () => {
     parent.postMessage({ pluginMessage: { type: 'create_connection' } }, '*')
   }
