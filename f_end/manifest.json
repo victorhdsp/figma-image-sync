@@ -2,7 +2,7 @@
   "name": "figma-image-sync",
   "id": "1479455324622422872",
   "api": "1.0.0",
-  "main": "src/code.js",
+  "main": "dist/code.js",
   "capabilities": [],
   "enableProposedApi": false,
   "documentAccess": "dynamic-page",
