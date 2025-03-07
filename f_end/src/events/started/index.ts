@@ -26,7 +26,7 @@ async function addImageInPage(file: IFile, page: PageNode, token: string) {
     if (!await componentNeedUpdate(fComp, imageInfo))
       return true;
   } else
-    fComp = await createComponent(imageInfo);
+    fComp = await createComponent(page, imageInfo);
   
   if (!fComp) {
     figma.notify("Strange error in component");
