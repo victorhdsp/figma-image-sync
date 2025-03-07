@@ -18,6 +18,7 @@
 
 <script>
   parent.postMessage({ pluginMessage: { type: 'started' } }, '*');
+
   document.getElementById('remove').onclick = () => {
     parent.postMessage({ pluginMessage: { type: 'unselect_folder' } }, '*');
   }

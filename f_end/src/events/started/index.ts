@@ -68,7 +68,8 @@ export async function started() {
   const folderId = await figma.clientStorage.getAsync(`${pluginId}_folder`);
   const token = await figma.clientStorage.getAsync('token');
   const page = await create_or_set_page(folderId);
-  exec(folderId, page, token);
+  await exec(folderId, page, token);
+  setTimeout(() => started(), 10 * 1000);
 }
 
 export const STARTED = "started";
