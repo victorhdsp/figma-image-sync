@@ -1,4 +1,3 @@
-"use strict"
 import { create_connection, CREATE_CONNECTION } from './events/create_connection';
 import { get_drive, GET_DRIVE } from './events/get_drive';
 import { HAS_CONNECTED, has_connected } from './events/has_connected';

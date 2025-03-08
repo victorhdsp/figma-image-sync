@@ -39,12 +39,14 @@ async function addImageInPage(file: IFile, page: PageNode, token: string) {
       return false;
     }
     await setSvgInComponent(fComp, svg);
-  } else if (file.mimeType.includes("x-photoshop")) {
+  } 
+  else if (file.mimeType.includes("x-photoshop")) {
     console.log("photoshop file");
     figma.notify("Photoshop file not supported now");
     fComp.remove();
     return false;
-  } else {
+  } 
+  else {
     const base64 = await google.download_image(token, file.id);
     if (!base64) {
       figma.notify("Error to download image");
