@@ -74,9 +74,20 @@ export async function download_image(token: string, fileId: string): Promise<Uin
     return false;
 }
 
+export async function download_svg(token: string, fileId: string): Promise<string | false> {
+    const url = `${DRIVE_FILES}/${fileId}?alt=media&source=downloadUrl`;
+    const response = await fetch(url, {
+        headers: { Authorization: `Bearer ${token}` }
+    });
+    if (response.ok)
+        return response.text();
+    return false;
+}
+
 export default {
     about,
     list_images_and_folders,
     get_image_info,
-    download_image
+    download_image,
+    download_svg
 }

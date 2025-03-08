@@ -1,5 +1,5 @@
 import google, { IFile } from "../../utils/google";
-import { createComponent, getComponent, componentNeedUpdate, setImageInComponent } from "./component";
+import { createComponent, getComponent, componentNeedUpdate, setImageInComponent, setSvgInComponent } from "./component";
 
 async function create_or_set_page(pluginId: string) {
   await figma.loadAllPagesAsync();
@@ -21,7 +21,6 @@ async function addImageInPage(file: IFile, page: PageNode, token: string) {
 
   let fComp: ComponentNode | null;
   fComp = await getComponent(page, imageInfo);
-
   if (fComp) {
     if (!await componentNeedUpdate(fComp, imageInfo))
       return true;
@@ -33,12 +32,27 @@ async function addImageInPage(file: IFile, page: PageNode, token: string) {
     return false;
   }
 
-  const base64 = await google.download_image(token, file.id);
-  if (!base64) {
-    figma.notify("Error to download image");
+  if (file.mimeType.includes("svg")) {
+    const svg = await google.download_svg(token, file.id);
+    if (!svg) {
+      figma.notify("Error to download svg");
+      return false;
+    }
+    await setSvgInComponent(fComp, svg);
+  } else if (file.mimeType.includes("x-photoshop")) {
+    console.log("photoshop file");
+    figma.notify("Photoshop file not supported now");
+    fComp.remove();
     return false;
+  } else {
+    const base64 = await google.download_image(token, file.id);
+    if (!base64) {
+      figma.notify("Error to download image");
+      return false;
+    }
+    await setImageInComponent(fComp, base64);
   }
-  await setImageInComponent(fComp, base64);
+  page.appendChild(fComp);
   return true;
 }
 
