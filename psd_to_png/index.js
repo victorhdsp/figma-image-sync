@@ -10,7 +10,7 @@ const im = new Magick.Image(imageFile);
 im.read(imageFile);
 im.write('image_1.png');*/
 
-const fileId = "15Lw6Fr1EBsN9I4pyyE7Pk9nlyfWq72Z3";
+const fileId = "1Gfu4ZO7fFzyrFPFaodSVqbjWWKJcVk0g";
 
 export async function download_image(token) {
     const url = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media&source=download`;
@@ -54,8 +54,13 @@ export async function download_image(token) {
     return false;
 }
 
-const imageUint8Array = await download_image("ya29.a0AeXRPp4MbPLT3KGL3l09HKaCYC-MKQsdtDElS_Ls6x-XaA0GV3ddDmg871K5DYDIo5OvhagW_K67GcDz2gYWUFjwxqEaAHJm495M0PpU7nHoMVOA1ZzOvWAlkozmmv6DIIpZ-3d19lOHSfCOAXkpkDKL1V9AuKc4HwcIqY_wuwaCgYKARcSARMSFQHGX2Mi8yu2u2wMWxlRNG2nJ8yXXw0177");
+const imageUint8Array = await download_image("ya29.a0AeXRPp7uSAmY0yHdjUA_EjJsV_K4zKEEHQ6UKCW-wxYZj2aQIsc9MnYSUo_osq_8D804du8IJCvXElwICDmd75WTWG9qNdFG_uQse313eZn36fEPa6aP2sG68jNzlto_FrD6DDkIGDDmUeio9vAdu3u4l33hu_VApZbhBM33PgaCgYKASYSARMSFQHGX2Mi5NRQ5obyhceqlSNiMkznUw0177");
 
 const blob = new Magick.Blob(imageUint8Array.buffer);
 const im = new Magick.Image(blob);
-im.write('test.png');
+let newBlob = new Magick.Blob();
+console.log(newBlob.data(), "antes");
+im.magick("jpg");
+im.write(newBlob);
+console.log(newBlob.data(), "depois");
+fs.writeFileSync("image_1_test.jpg", new Uint8Array(newBlob.data()));
