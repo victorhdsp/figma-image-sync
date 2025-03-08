@@ -62,16 +62,39 @@ export async function get_image_info(token: string, fileId: string): Promise<IIm
     return false;
 }
 
-export async function download_image(token: string, fileId: string): Promise<Uint8Array | false> {
-    const url = `${DRIVE_FILES}/${fileId}?alt=media&source=downloadUrl`;
+async function download_partial_image(url: string, token: string, start: number): Promise<{arr: Uint8Array, end: number} | false> {
+    const size = 1024 * 1024 * 10;
     const response = await fetch(url, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: {
+            Authorization: `Bearer ${token}`,
+            Range: `bytes=${start}-${start + size - 1}`
+        }
     });
     if (response.ok) {
         const data = await response.arrayBuffer();
-        return new Uint8Array(data);
+        return {
+            arr: new Uint8Array(data),
+            end: start + size
+        };
     }
     return false;
+}
+
+export async function download_image(token: string, fileId: string): Promise<Uint8Array | false> {
+    const url = `${DRIVE_FILES}/${fileId}?alt=media&source=downloadUrl`;
+    let data: Uint8Array = new Uint8Array();
+    let tmp: {arr: Uint8Array, end: number} | false = await download_partial_image(url, token, 0);
+    let start = 0;
+    
+    if (!tmp)
+        return false;
+
+    while (tmp && tmp.arr) {
+        data = new Uint8Array([...data, ...tmp.arr]);
+        start = tmp.end;
+        tmp = await download_partial_image(url, token, start);
+    }
+    return data;
 }
 
 export async function download_svg(token: string, fileId: string): Promise<string | false> {
