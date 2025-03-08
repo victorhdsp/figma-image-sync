@@ -11,6 +11,8 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "magickwand.js": "^2.0.1"
+    "@imagemagick/magick-wasm": "^0.0.34",
+    "magickwand.js": "^2.0.1",
+    "wasm-imagemagick": "^1.2.8"
   }
 }

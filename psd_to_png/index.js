@@ -1,16 +1,15 @@
-import ImageMagick from 'magickwand.js';
-import fs from 'fs';
-import * as path from 'path';
+import fs, { readFileSync } from 'node:fs';
+import path from 'node:path';
+import {
+    initializeImageMagick,
+    ImageMagick,
+    MagickFormat,
+} from '@imagemagick/magick-wasm';
 
-const { Magick, MagickCore } = await ImageMagick;
-/*
-const imageFile = path.join(import.meta.dirname, 'image_1.psd');
-
-const im = new Magick.Image(imageFile);
-im.read(imageFile);
-im.write('image_1.png');*/
-
-const fileId = "1Gfu4ZO7fFzyrFPFaodSVqbjWWKJcVk0g";
+const fileId = "15Lw6Fr1EBsN9I4pyyE7Pk9nlyfWq72Z3";
+const wasmLocation = './node_modules/@imagemagick/magick-wasm/dist/magick.wasm';
+const washPath = path.resolve(wasmLocation);
+const wasmBytes = readFileSync(washPath);
 
 export async function download_image(token) {
     const url = `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media&source=download`;
@@ -54,13 +53,15 @@ export async function download_image(token) {
     return false;
 }
 
-const imageUint8Array = await download_image("ya29.a0AeXRPp7uSAmY0yHdjUA_EjJsV_K4zKEEHQ6UKCW-wxYZj2aQIsc9MnYSUo_osq_8D804du8IJCvXElwICDmd75WTWG9qNdFG_uQse313eZn36fEPa6aP2sG68jNzlto_FrD6DDkIGDDmUeio9vAdu3u4l33hu_VApZbhBM33PgaCgYKASYSARMSFQHGX2Mi5NRQ5obyhceqlSNiMkznUw0177");
+const imageUint8Array = await download_image("ya29.a0AeXRPp43PZdsdi20EFV2LOshogbECiMWD0w_h_iJdokfTkqc9pZ_PpvJFARZWucSMQKcz_o7VrLKvN4DvMv9I3a-txPUafiUDKkQ7E1viaxaxzEJRKgBOrtRKtPlQ7UIVvF7kgacZfpidQmkFooSLyCKRHE4AiDPmKP-usmN3waCgYKAbwSARMSFQHGX2MiNs_27k-M4BJkTIu36fru9Q0177");
 
-const blob = new Magick.Blob(imageUint8Array.buffer);
-const im = new Magick.Image(blob);
-let newBlob = new Magick.Blob();
-console.log(newBlob.data(), "antes");
-im.magick("jpg");
-im.write(newBlob);
-console.log(newBlob.data(), "depois");
-fs.writeFileSync("image_1_test.jpg", new Uint8Array(newBlob.data()));
+initializeImageMagick(wasmBytes).then(() => {
+    ImageMagick.read(imageUint8Array, image => {
+        image.write(MagickFormat.Png, (data) => {
+            fs.writeFileSync('output.png', data);
+        });
+    });
+});
+/*
+const result = await call([image], ['convert', 'output.png']);
+console.log(result);*/
