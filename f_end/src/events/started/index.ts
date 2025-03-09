@@ -1,44 +1,58 @@
-import google, { IFile } from "../../utils/google";
-import { createComponent, getComponent, componentNeedUpdate, setImageInComponent } from "./component";
+import api from "../../utils/api";
+import google, { IFile, IImageInfo } from "../../utils/google";
+import { createComponent, getComponent, componentNeedUpdate, setImageInComponent, setSvgInComponent } from "./component";
+import { create_or_set_page } from "./page";
 
-async function create_or_set_page(pluginId: string) {
-  await figma.loadAllPagesAsync();
-  const pages = figma.root.children;
-  let page = pages.find((page) => page.name === pluginId);
-  if (!page) {
-    page = figma.createPage();
-    page.name = pluginId;
-  }
-  return page;
-}
-
-async function addImageInPage(file: IFile, page: PageNode, token: string) {
-  const imageInfo = await google.get_image_info(token, file.id);
-  if (!imageInfo) {
-    figma.notify("Error to get image info");
-    return false;
-  }
-
+export async function create_or_set_component(page: PageNode, imageInfo: IImageInfo) {
   let fComp: ComponentNode | null;
   fComp = await getComponent(page, imageInfo);
-
   if (fComp) {
     if (!await componentNeedUpdate(fComp, imageInfo))
-      return true;
+      return null;
   } else
     fComp = await createComponent(page, imageInfo);
   
   if (!fComp) {
     figma.notify("Strange error in component");
+    return null;
+  }
+  return fComp;
+}
+
+async function addImageInPage(file: IFile, page: PageNode, token: string) {
+  let fComp: ComponentNode | null;
+  const imageInfo = await google.get_image_info(token, file.id);
+  if (!imageInfo) {
+    figma.notify("Error to get image info");
+    return false;
+  }
+  
+  if (file.mimeType.includes("x-photoshop")) {
+    figma.notify("Not implemented yet");
     return false;
   }
 
-  const base64 = await google.download_image(token, file.id);
-  if (!base64) {
-    figma.notify("Error to download image");
+  fComp = await create_or_set_component(page, imageInfo);
+  if (!fComp)
     return false;
+
+  if (file.mimeType.includes("svg")) {
+    const svg = await google.download_svg(token, file.id);
+    if (!svg) {
+      figma.notify("Error to download svg");
+      return false;
+    }
+    await setSvgInComponent(fComp, svg);
+  } 
+  else {
+    const base64 = await google.download_image(token, file.id);
+    if (!base64) {
+      figma.notify("Error to download image");
+      return false;
+    }
+    await setImageInComponent(fComp, base64);
   }
-  await setImageInComponent(fComp, base64);
+  page.appendChild(fComp);
   return true;
 }
 

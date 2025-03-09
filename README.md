@@ -16,7 +16,7 @@
 
  Em um terminal basta entrar na pasta "b_end", usar o "npm install" para instalar as dependencias e usar o "npm run dev" para executar o backend.
 
- Em um segundo terminal, basta entrar na pasta "f_end" e usar o "npm install" em seguida o "npm run dev" para executar o frontend.
+ Em um segundo terminal, basta entrar na pasta "f_end" e usar o "npm install" em seguida o "npm run watch" para executar o frontend.
 
  Com ambos ativos, basta entrar no figma e importar o "manifest.json" do frontend na parte de plugins e então executar.
  

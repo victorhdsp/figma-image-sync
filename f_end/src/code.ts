@@ -1,10 +1,15 @@
-"use strict"
 import { create_connection, CREATE_CONNECTION } from './events/create_connection';
 import { get_drive, GET_DRIVE } from './events/get_drive';
 import { HAS_CONNECTED, has_connected } from './events/has_connected';
 import { SELECT_FOLDER, select_folder } from './events/select_folder';
 import { UNSELECT_FOLDER, unselect_folder } from './events/unselect_folder';
 import { STARTED, started } from './events/started';
+
+interface Msg {
+  type: string;
+  count: number;
+  id: string;
+}
 
 (() => {
   figma.showUI(__uiFiles__.main);
@@ -16,7 +21,7 @@ import { STARTED, started } from './events/started';
     return;
   }
 
-  figma.ui.onmessage =  (msg: {type: string, count: number, id: string}) => {
+  figma.ui.onmessage =  (msg: Msg) => {
     if (msg.type === HAS_CONNECTED)
       has_connected(user, msg.id);
 

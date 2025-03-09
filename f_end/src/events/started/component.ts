@@ -36,8 +36,19 @@ export async function componentNeedUpdate(fComp: ComponentNode, imageInfo: IImag
 }
 
 export async function setImageInComponent(fComp: ComponentNode, base64: Uint8Array) {
+  fComp.children.forEach((node) => node.remove());
   const fImage = figma.createImage(base64);
   const { width, height } = await fImage.getSizeAsync();
-  fComp.fills = [{ type: "IMAGE", scaleMode: "FILL", imageHash: fImage.hash }];
+  const fRect = figma.createRectangle();
+  fRect.fills = [{ type: "IMAGE", scaleMode: "FILL", imageHash: fImage.hash }];
+  fRect.resize(width, height);
   fComp.resize(width, height);
+  fComp.appendChild(fRect);
+}
+
+export async function setSvgInComponent(fComp: ComponentNode, svg: string) {
+  fComp.children.forEach((node) => node.remove());
+  const fSvg = figma.createNodeFromSvg(svg);
+  fComp.resize(fSvg.width, fSvg.height);
+  fComp.appendChild(fSvg);
 }
