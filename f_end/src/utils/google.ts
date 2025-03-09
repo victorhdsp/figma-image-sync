@@ -63,7 +63,7 @@ export async function get_image_info(token: string, fileId: string): Promise<IIm
 }
 
 async function download_partial_image(url: string, token: string, start: number): Promise<{arr: Uint8Array, end: number} | false> {
-    const size = 1024 * 1024 * 10;
+    const size = 1024 * 1024 * 1;
     const response = await fetch(url, {
         headers: {
             Authorization: `Bearer ${token}`,
