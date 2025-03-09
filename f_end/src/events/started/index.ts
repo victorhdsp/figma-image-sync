@@ -1,36 +1,40 @@
-import google, { IFile } from "../../utils/google";
+import api from "../../utils/api";
+import google, { IFile, IImageInfo } from "../../utils/google";
 import { createComponent, getComponent, componentNeedUpdate, setImageInComponent, setSvgInComponent } from "./component";
+import { create_or_set_page } from "./page";
 
-async function create_or_set_page(pluginId: string) {
-  await figma.loadAllPagesAsync();
-  const pages = figma.root.children;
-  let page = pages.find((page) => page.name === pluginId);
-  if (!page) {
-    page = figma.createPage();
-    page.name = pluginId;
-  }
-  return page;
-}
-
-async function addImageInPage(file: IFile, page: PageNode, token: string) {
-  const imageInfo = await google.get_image_info(token, file.id);
-  if (!imageInfo) {
-    figma.notify("Error to get image info");
-    return false;
-  }
-
+export async function create_or_set_component(page: PageNode, imageInfo: IImageInfo) {
   let fComp: ComponentNode | null;
   fComp = await getComponent(page, imageInfo);
   if (fComp) {
     if (!await componentNeedUpdate(fComp, imageInfo))
-      return true;
+      return null;
   } else
     fComp = await createComponent(page, imageInfo);
   
   if (!fComp) {
     figma.notify("Strange error in component");
+    return null;
+  }
+  return fComp;
+}
+
+async function addImageInPage(file: IFile, page: PageNode, token: string) {
+  let fComp: ComponentNode | null;
+  const imageInfo = await google.get_image_info(token, file.id);
+  if (!imageInfo) {
+    figma.notify("Error to get image info");
     return false;
   }
+  
+  if (file.mimeType.includes("x-photoshop")) {
+    figma.notify("Not implemented yet");
+    return false;
+  }
+
+  fComp = await create_or_set_component(page, imageInfo);
+  if (!fComp)
+    return false;
 
   if (file.mimeType.includes("svg")) {
     const svg = await google.download_svg(token, file.id);
@@ -39,12 +43,6 @@ async function addImageInPage(file: IFile, page: PageNode, token: string) {
       return false;
     }
     await setSvgInComponent(fComp, svg);
-  } 
-  else if (file.mimeType.includes("x-photoshop")) {
-    console.log("photoshop file");
-    figma.notify("Photoshop file not supported now");
-    fComp.remove();
-    return false;
   } 
   else {
     const base64 = await google.download_image(token, file.id);

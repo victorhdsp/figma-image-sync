@@ -5,6 +5,12 @@ import { SELECT_FOLDER, select_folder } from './events/select_folder';
 import { UNSELECT_FOLDER, unselect_folder } from './events/unselect_folder';
 import { STARTED, started } from './events/started';
 
+interface Msg {
+  type: string;
+  count: number;
+  id: string;
+}
+
 (() => {
   figma.showUI(__uiFiles__.main);
   
@@ -15,7 +21,7 @@ import { STARTED, started } from './events/started';
     return;
   }
 
-  figma.ui.onmessage =  (msg: {type: string, count: number, id: string}) => {
+  figma.ui.onmessage =  (msg: Msg) => {
     if (msg.type === HAS_CONNECTED)
       has_connected(user, msg.id);
 
