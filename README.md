@@ -12,6 +12,10 @@
  
  [ ] Converter arquivos em PSD para PNG.
 
+ [ ] Remoção da diferenciação entre backend e frontend.
+
+ [ ] Adicionar uma instalação fácil
+
  ## Instalação
 
  Node: v20.15.1
